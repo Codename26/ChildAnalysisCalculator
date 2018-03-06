@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Child Analysis Calculator</string>
+    <string name="search_title">Поиск</string>
+    <string-array name="titles_array">
+        <item>Общий анализ крови</item>
+        <item>Общий анализ мочи</item>
+        <item>Биохимия крови</item>
+        <item>Гормоны</item>
+    </string-array>
+    <string-array name="icons_array">
+        <item>ic_blood_analysis_icon</item>
+        <item>ic_urine_analysis_icon</item>
+        <item>ic_biochemistry_blood_icon</item>
+        <item>ic_hormons_icon</item>
+    </string-array>
+
 </resources>
