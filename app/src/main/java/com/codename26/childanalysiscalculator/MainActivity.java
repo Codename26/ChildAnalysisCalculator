@@ -1,7 +1,9 @@
 package com.codename26.childanalysiscalculator;
 
+import android.app.DatePickerDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,13 +12,18 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.widget.DatePicker;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, GenderPickerFragment.OnGenderPicked {
+    public static final String BOY = "boy";
+    public static final String GIRL = "girl";
 
     private ArrayList<ItemMainActivity> mItems;
     private RecyclerView mRecyclerView;
+    private String mGender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +34,26 @@ public class MainActivity extends AppCompatActivity {
         mItems = initItems();
         mRecyclerView = findViewById(R.id.rvMainActivity);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        MainActivityAdapter adapter = new MainActivityAdapter(this, mItems);
+        MainActivityAdapter adapter = new MainActivityAdapter(this, mItems,
+                new MainActivityAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(ItemMainActivity item) {
+                        // showDatePickerDialog();
+                        showGenderPickerDialog();
+                    }
+                });
         mRecyclerView.setAdapter(adapter);
+    }
+
+    private void showGenderPickerDialog() {
+        DialogFragment dialogFragment = GenderPickerFragment.newInstance(getResources().getString(R.string.choose_gender));
+        dialogFragment.show(getSupportFragmentManager(), "dialogFragment");
+
+    }
+
+    private void showDatePickerDialog() {
+        DialogFragment dialogFragment = new DatePickerFragment();
+        dialogFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
 
@@ -57,4 +82,14 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Toast.makeText(this, year + " " + month + " " + dayOfMonth, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onGenderPicked(String s) {
+        mGender = s;
+        showDatePickerDialog();
+    }
 }

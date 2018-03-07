@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,12 +15,19 @@ import java.util.zip.Inflater;
 
 public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityAdapter.ItemViewHolder> {
 
+    public interface OnItemClickListener{
+        void onItemClick(ItemMainActivity item);
+    }
+
     private Context mContext;
     private ArrayList<ItemMainActivity> mItems;
+    private final OnItemClickListener mListener;
 
-    public MainActivityAdapter(Context context, ArrayList<ItemMainActivity> items){
+
+    public MainActivityAdapter(Context context, ArrayList<ItemMainActivity> items, OnItemClickListener listener){
         mContext = context;
         mItems = items;
+        mListener = listener;
     }
 
 
@@ -32,14 +40,7 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityAdapte
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         ItemMainActivity item = mItems.get(position);
-        holder.title.setText(item.getTitle());
-        if (item.getIconURI() != null && !item.getIconURI().equals("")) {
-            String iconID = item.getIconURI();
-            int resourceID = mContext.getResources().getIdentifier(iconID, "drawable",
-                    mContext.getPackageName());
-            holder.icon.setImageResource(resourceID);
-        }
-
+        holder.bind(item, mListener);
     }
 
     @Override
@@ -54,6 +55,22 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityAdapte
             super(itemView);
             title = itemView.findViewById(R.id.tvTitle);
             icon = itemView.findViewById(R.id.ivIcon);
+        }
+
+        public void bind(final ItemMainActivity item, final OnItemClickListener listener) {
+            title.setText(item.getTitle());
+            if (item.getIconURI() != null && !item.getIconURI().equals("")) {
+                String iconID = item.getIconURI();
+                int resourceID = mContext.getResources().getIdentifier(iconID, "drawable",
+                        mContext.getPackageName());
+                icon.setImageResource(resourceID);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onItemClick(item);
+                    }
+                });
+            }
         }
     }
 }
